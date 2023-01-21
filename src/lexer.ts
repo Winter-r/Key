@@ -8,6 +8,7 @@ export enum TokenType
   BinaryOperator,
   Let,
 }
+
 const KEYWORDS: Record<string, TokenType> = {
   let: TokenType.Let,
 };
