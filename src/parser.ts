@@ -6,7 +6,8 @@ import
     Expression,
     BinaryExpression,
     NumericLiteral,
-    Identifier
+    Identifier,
+    NullLiteral
 } from "./AST.ts";
 
 import
@@ -39,7 +40,7 @@ export default class Parser
     private Expect(type: TokenType, err: any)
     {
         const prev = this.tokens.shift() as Token;
-        
+
         if (!prev || prev.type != type)
         {
             console.error("Parser Error:\n", err, prev, "- Expecting:", type);
@@ -129,6 +130,13 @@ export default class Parser
                     type: "Identifier",
                     name: this.Eat().value
                 } as Identifier;
+
+            case TokenType.Null:
+                this.Eat();
+                return {
+                    type: "NullLiteral",
+                    value: "null"
+                } as NullLiteral;
 
             case TokenType.Number:
                 return {

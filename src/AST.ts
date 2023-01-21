@@ -1,6 +1,7 @@
 export type NodeType =
     | "Program"
     | "NumericLiteral"
+    | "NullLiteral"
     | "Identifier"
     | "Variable"
     | "Assignment"
@@ -42,8 +43,14 @@ export interface Identifier extends Expression
     name: string;
 }
 
-export interface NumericLiteral extends Node
+export interface NumericLiteral extends Expression
 {
     type: "NumericLiteral";
     value: number;
+}
+
+export interface NullLiteral extends Expression
+{
+    type: "NullLiteral";
+    value: "null";
 }

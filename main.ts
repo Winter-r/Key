@@ -1,11 +1,12 @@
 import Parser from "./src/parser.ts";
+import { Evaluate } from "./src/runtime/interpreter.ts";
 
 repl();
 
 function repl() 
 {
     const parser = new Parser();
-    
+
     console.log("\nWelcome to the REPL v0.1!")
     while (true)
     {
@@ -17,6 +18,8 @@ function repl()
         }
 
         const program = parser.ProduceAST(input);
-        console.log(program);
+
+        const result = Evaluate(program);
+        console.log(result);
     }
 }
