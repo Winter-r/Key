@@ -4,7 +4,7 @@ Key is a programming language in its early stages, being written in Typescript.
 # File Extension
 * *.ky
 
-# Keywords *MORE TO COME*
+# Keywords
 * `let`
 * `const`
 
