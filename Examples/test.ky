@@ -1,12 +1,12 @@
-const obj =
+const obj <-
 {
     x: 100,
     y: 200,
-    foo,
     complex:
     {
         a: 1,
         b: 2,
         c: 3,
     },
+    foo
 }
