@@ -18,3 +18,6 @@ Programming Language written in Typescript.
   * Division `/`
   * Modulus `%`
 * Grouping [Example](https://github.com/Winter-r/Key/blob/main/Examples/test.ky)
+
+# Supported Features
+* Objects and Members
