@@ -1,4 +1,4 @@
-import { Node, BinaryExpression, Identifier } from "../../AST.ts";
+import { Node, BinaryExpression, Identifier, NumericLiteral, AssignmentExpression } from "../../AST.ts";
 import Environment from "../environment.ts";
 import { Evaluate } from "../interpreter.ts";
 import { RuntimeValue, NumberValue } from "../values.ts";
@@ -70,4 +70,25 @@ export function EvaluateIdentifier(astNode: Node, env: Environment): RuntimeValu
     }
 
     return value;
+}
+
+export function EvaluateNumericLiteral(astNode: Node): RuntimeValue
+{
+    return {
+        type: "number",
+        value: (astNode as NumericLiteral).value
+    } as NumberValue;
+}
+
+export function EvaluateAssignmentExpression(astNode: Node, env: Environment): RuntimeValue
+{
+    const node = astNode as AssignmentExpression;
+
+    if (node.assignee.type !== "Identifier")
+    {
+        throw `Cannot assign to ${ JSON.stringify(node.assignee) }`;
+    }
+
+    const name = (node.assignee as Identifier).name;
+    return env.AssignVariable(name, Evaluate(node.value, env));
 }

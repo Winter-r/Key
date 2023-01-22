@@ -1,19 +1,25 @@
 import Parser from "./src/parser.ts";
 import Environment from "./src/runtime/environment.ts";
 import { Evaluate } from "./src/runtime/interpreter.ts";
-import { MakeNull, MakeBool } from "./src/runtime/values.ts";
 
 repl();
+// run("./Examples/test.key");
+
+async function run(filename: string)
+{
+    const parser = new Parser();
+    const env = new Environment();
+
+    const input = await Deno.readTextFile(filename);
+    const program = parser.ProduceAST(input);
+    const result = Evaluate(program, env);
+    console.log(result);
+}
 
 function repl() 
 {
     const parser = new Parser();
     const env = new Environment();
-
-    // Default Global Variables
-    env.DeclareVariable("true", MakeBool(true), true);
-    env.DeclareVariable("false", MakeBool(false), true);
-    env.DeclareVariable("null", MakeNull(), true);
 
     console.log("\nWelcome to the REPL v0.1!")
     while (true)

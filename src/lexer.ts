@@ -1,16 +1,26 @@
 export enum TokenType
 {
+  // Literals
   Number,
-  String,
   Identifier,
-  Assign,
-  Semicolon,
-  OpenParen,
-  CloseParen,
-  BinaryOperator,
-  Let,
-  Const,
-  EOF // End of file
+
+  // Keywords
+  Let, // let
+  Const, // const
+
+  // Operators
+  Assign, // =
+  BinaryOperator, // + - * / %
+
+  // Grouping
+  OpenParen, // (
+  CloseParen, // )
+  OpenBrace, // {
+  CloseBrace, // }
+
+  // Misc
+  Semicolon, // ;
+  EOF // EndOfFile
 }
 
 const KEYWORDS: Record<string, TokenType> = {
@@ -53,6 +63,7 @@ export function Tokenize(sourceCode: string): Token[]
 
   while (src.length > 0)
   {
+    // Handle grouping
     if (src[0] == "(")
     {
       tokens.push(Token(src.shift(), TokenType.OpenParen));
@@ -61,16 +72,31 @@ export function Tokenize(sourceCode: string): Token[]
     {
       tokens.push(Token(src.shift(), TokenType.CloseParen));
     }
+    else if (src[0] == "{")
+    {
+      tokens.push(Token(src.shift(), TokenType.OpenBrace));
+    }
+    else if (src[0] == "}")
+    {
+      tokens.push(Token(src.shift(), TokenType.CloseBrace));
+    }
+
+    // Handle binary operators
     else if (
       src[0] == "+" || src[0] == "-" || src[0] == "*" || src[0] == "/" || src[0] == "%"
     )
     {
       tokens.push(Token(src.shift(), TokenType.BinaryOperator));
     }
-    else if (src[0] == "=")
+
+    // Handle assignment operator <-
+    else if (src[0] == "<" && src[1] == "-")
     {
-      tokens.push(Token(src.shift(), TokenType.Assign));
+      src.shift();
+      src.shift();
+      tokens.push(Token("<-", TokenType.Assign));
     }
+
     else if (src[0] == ";")
     {
       tokens.push(Token(src.shift(), TokenType.Semicolon));

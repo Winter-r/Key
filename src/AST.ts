@@ -1,7 +1,9 @@
 export type NodeType =
+    // STATEMENTS
     | "Program"
     | "VariableDeclaration"
     // EXPRESSIONS
+    | "AssignmentExpression"
     | "NumericLiteral"
     | "Identifier"
     | "BinaryExpression";
@@ -27,6 +29,13 @@ export interface VariableDeclaration extends Node
 
 // deno-lint-ignore no-empty-interface
 export interface Expression extends Node { }
+
+export interface AssignmentExpression extends Expression
+{
+    type: "AssignmentExpression";
+    assignee: Expression;
+    value: Expression;
+}
 
 export interface BinaryExpression extends Expression
 {

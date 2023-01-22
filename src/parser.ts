@@ -7,7 +7,8 @@ import
     BinaryExpression,
     NumericLiteral,
     Identifier,
-    VariableDeclaration
+    VariableDeclaration,
+    AssignmentExpression
 } from "./AST.ts";
 
 import
@@ -16,6 +17,12 @@ import
     Token,
     TokenType
 } from "./lexer.ts";
+
+// ORDER OF PRECEDENCE
+// 1. Assignment
+// 2. Additive
+// 3. Multiplicative
+// 4. Primary
 
 export default class Parser
 {
@@ -115,7 +122,7 @@ export default class Parser
             identifier,
             value: this.ParseExpression()
         } as VariableDeclaration;
-        
+
         // Check for semicolon
         this.Expect(TokenType.Semicolon, "Expected semicolon");
 
@@ -124,7 +131,20 @@ export default class Parser
 
     private ParseExpression(): Expression
     {
-        return this.ParseAdditiveExpression();
+        return this.ParseAssignmentExpression();
+    }
+
+    ParseAssignmentExpression(): Expression
+    {
+        const left = this.ParseAdditiveExpression(); // TODO: Swap this with ObjectExpression
+        if (this.At().type == TokenType.Assign)
+        {
+            this.Eat(); // Eat the assignment operator
+            const value = this.ParseAssignmentExpression();
+            return { type: "AssignmentExpression", assignee: left, value } as AssignmentExpression;
+        }
+
+        return left;
     }
 
     private ParseAdditiveExpression(): Expression

@@ -1,7 +1,7 @@
-import { Node, NumericLiteral, Program, VariableDeclaration } from "../../AST.ts";
+import { Node, Program, VariableDeclaration } from "../../AST.ts";
 import Environment from "../environment.ts";
 import { Evaluate } from "../interpreter.ts";
-import { RuntimeValue, MakeNull, NumberValue } from "../values.ts";
+import { RuntimeValue, MakeNull } from "../values.ts";
 
 export function EvaluateProgram(astNode: Node, env: Environment): RuntimeValue
 {
@@ -13,14 +13,6 @@ export function EvaluateProgram(astNode: Node, env: Environment): RuntimeValue
     }
 
     return result;
-}
-
-export function EvaluateNumericLiteral(astNode: Node): RuntimeValue
-{
-    return {
-        type: "number",
-        value: (astNode as NumericLiteral).value
-    } as NumberValue;
 }
 
 export function EvaluateVariableDeclaration(astNode: Node, env: Environment): RuntimeValue
