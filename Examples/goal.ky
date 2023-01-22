@@ -1,0 +1,16 @@
+using System;
+
+public class Goal
+{
+    let message <- "Hello World";
+    
+    Terminal.Writeln(message);
+
+    const messageObject <-
+    {
+        content,
+        value
+    }
+
+    Terminal.Readln("Enter a message", messageObject.content);
+}
