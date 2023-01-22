@@ -2,8 +2,8 @@ import Parser from "./src/parser.ts";
 import Environment from "./src/runtime/environment.ts";
 import { Evaluate } from "./src/runtime/interpreter.ts";
 
-repl();
-// run("./Examples/test.key");
+// repl();
+run("./Examples/test.key");
 
 async function run(filename: string)
 {
