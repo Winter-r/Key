@@ -6,7 +6,8 @@ import
     Expression,
     BinaryExpression,
     NumericLiteral,
-    Identifier    
+    Identifier,
+    VariableDeclaration
 } from "./AST.ts";
 
 import
@@ -42,7 +43,8 @@ export default class Parser
 
         if (!prev || prev.type != type)
         {
-            throw `Parser Error:\n ${err} ${prev} - Expecting: ${type}`;
+            console.error("Parser Error:\n ", err, prev, "- Expecting:", type);
+            Deno.exit(1);
         }
 
         return prev;
@@ -68,8 +70,56 @@ export default class Parser
 
     private ParseNode(): Node
     {
-        // skip to parse_expression
-        return this.ParseExpression();
+        switch (this.At().type)
+        {
+            case TokenType.Let:
+            case TokenType.Const:
+                return this.ParseVariableDeclaration();
+            default:
+                return this.ParseExpression();
+        }
+    }
+
+    // LET IDIENTIFIER = EXPRESSION
+    // CONST IDENTIFIER = EXPRESSION
+    private ParseVariableDeclaration(): Node
+    {
+        const isConst = this.Eat().type == TokenType.Const;
+        const identifier = this.Expect(
+            TokenType.Identifier, "Expected identifier"
+        ).value;
+
+        if (this.At().type == TokenType.Semicolon)
+        {
+            this.Eat();
+            if (isConst)
+            {
+                throw `Parser Error: Expected an assignment for const variable: ${ identifier }`;
+            }
+            return {
+                type: "VariableDeclaration",
+                const: isConst,
+                identifier,
+                value: undefined
+            } as VariableDeclaration;
+        }
+
+        this.Expect(
+            TokenType.Assign,
+            "Expected assignment operator"
+        );
+
+        const declaration = {
+            type: "VariableDeclaration",
+            const: isConst,
+            identifier,
+            value: this.ParseExpression()
+        } as VariableDeclaration;
+        
+        // Check for semicolon
+        this.Expect(TokenType.Semicolon, "Expected semicolon");
+
+        return declaration;
     }
 
     private ParseExpression(): Expression
@@ -143,7 +193,8 @@ export default class Parser
             }
 
             default:
-                throw `Parser Error:\n Unexpected token: ${this.At()}`;
+                console.error("Parser Error:\n Unexpected token:", this.At());
+                Deno.exit(1);
         }
     }
 }

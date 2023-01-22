@@ -3,16 +3,19 @@ export enum TokenType
   Number,
   String,
   Identifier,
-  Equals,
+  Assign,
+  Semicolon,
   OpenParen,
   CloseParen,
   BinaryOperator,
   Let,
+  Const,
   EOF // End of file
 }
 
 const KEYWORDS: Record<string, TokenType> = {
   let: TokenType.Let,
+  const: TokenType.Const
 };
 
 export interface Token
@@ -66,8 +69,13 @@ export function Tokenize(sourceCode: string): Token[]
     }
     else if (src[0] == "=")
     {
-      tokens.push(Token(src.shift(), TokenType.Equals));
-    } else
+      tokens.push(Token(src.shift(), TokenType.Assign));
+    }
+    else if (src[0] == ";")
+    {
+      tokens.push(Token(src.shift(), TokenType.Semicolon));
+    }
+    else
     {
       if (IsInt(src[0]))
       {
@@ -104,7 +112,7 @@ export function Tokenize(sourceCode: string): Token[]
       }
       else
       {
-        throw `Unreconized character found in source: ${ src[0].charCodeAt(0) } (${ src[0]})`;
+        throw `Unreconized character found in source: ${ src[0].charCodeAt(0) } (${ src[0] })`;
       }
     }
   }

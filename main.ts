@@ -1,7 +1,7 @@
 import Parser from "./src/parser.ts";
 import Environment from "./src/runtime/environment.ts";
 import { Evaluate } from "./src/runtime/interpreter.ts";
-import { MakeNumber, MakeNull, MakeBool } from "./src/runtime/values.ts";
+import { MakeNull, MakeBool } from "./src/runtime/values.ts";
 
 repl();
 
@@ -9,10 +9,11 @@ function repl()
 {
     const parser = new Parser();
     const env = new Environment();
-    env.DeclareVariable("x", MakeNumber(100));
-    env.DeclareVariable("true", MakeBool(true));
-    env.DeclareVariable("false", MakeBool(false));
-    env.DeclareVariable("null", MakeNull());
+
+    // Default Global Variables
+    env.DeclareVariable("true", MakeBool(true), true);
+    env.DeclareVariable("false", MakeBool(false), true);
+    env.DeclareVariable("null", MakeNull(), true);
 
     console.log("\nWelcome to the REPL v0.1!")
     while (true)
@@ -22,6 +23,12 @@ function repl()
         if (!input || input.includes("exit"))
         {
             Deno.exit(1);
+        }
+
+        if (input.includes("clear"))
+        {
+            console.clear();
+            continue;
         }
 
         const program = parser.ProduceAST(input);
