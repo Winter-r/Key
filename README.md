@@ -7,11 +7,11 @@ The primary goal of Key is to create a general purpose, OOP (Object Oriented Pro
 # File Extension
 * *.ky
 
-# Keywords *MORE TO COME*
+# Keywords
 * `let`
 * `const`
 
-# Operators *MORE TO COME*
+# Operators
 * Assign `<-`
 * Binary Operators
   * Addition `+`
