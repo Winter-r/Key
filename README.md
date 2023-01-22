@@ -4,12 +4,11 @@ Key is a programming language in its early stages, being written in Typescript.
 # File Extension
 * *.ky
 
-# Keywords
+# Keywords *MORE TO COME*
 * `let`
 * `const`
-* *MORE TO COME*
 
-# Operators
+# Operators *MORE TO COME*
 * Assign `<-`
 * Binary Operators
   * Addition `+`
@@ -19,5 +18,5 @@ Key is a programming language in its early stages, being written in Typescript.
   * Modulus `%`
 * Grouping [Example](https://github.com/Winter-r/Key/blob/main/Examples/test.ky)
 
-# Supported Features
+# Supported Features *MORE TO COME*
 * Objects and Members
