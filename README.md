@@ -5,8 +5,8 @@ Programming Language written in Typescript.
 * *.ky
 
 # Keywords
-* let
-* const
+* `let`
+* `const`
 * *MORE TO COME*
 
 # Operators
