@@ -1,5 +1,5 @@
 # Key
-Programming Language written in Typescript.
+Key is a programming language in its early stages, being written in Typescript.
 
 # File Extension
 * *.ky
