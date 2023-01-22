@@ -2,7 +2,7 @@
 Programming Language written in Typescript.
 
 # File Extension
-.ky
+* *.ky
 
 # Keywords
 * let
