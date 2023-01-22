@@ -2,7 +2,7 @@
 Key is an early-stage Programming Language, written in Typescript. Inspired by C# and Typescript.
 
 # Plan
-The primary goal of Key is to create a general purpose, OOP (Object Oriented Programming) language, capable to create GUI applications and graphics rendering.
+The primary goal of Key is to create a general purpose, OOP (Object Oriented Programming) language, capable of creating GUI applications and graphics rendering.
 
 # File Extension
 * *.ky
