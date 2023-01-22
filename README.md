@@ -1,10 +1,13 @@
 # Key
-Key is a programming language in its early stages, being written in Typescript.
+Key is an early-stage Programming Language, written in Typescript. Inspired by C# and Typescript.
+
+# Plan
+The primary goal of Key is to create a general purpose, OOP (Object Oriented Programming) language, capable to create GUI applications and graphics rendering.
 
 # File Extension
 * *.ky
 
-# Keywords
+# Keywords *MORE TO COME*
 * `let`
 * `const`
 
@@ -18,5 +21,11 @@ Key is a programming language in its early stages, being written in Typescript.
   * Modulus `%`
 * Grouping [Example](https://github.com/Winter-r/Key/blob/main/Examples/test.ky)
 
-# Supported Features *MORE TO COME*
+# Major Features to Come
 * Objects and Members
+* Classes
+* Functions
+* Graphics rendering
+* Loops
+* GUI application development support
+* Conditional statements
