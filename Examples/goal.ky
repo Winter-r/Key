@@ -9,8 +9,22 @@ public class Goal
     const messageObject <-
     {
         content,
-        value
+        display
     }
 
     Terminal.Readln("Enter a message", messageObject.content);
+    
+    If (messageObject.content = "")
+    {
+        messageObject.display <- false;
+    }
+    else
+    {
+        messageObject.display <- true;
+    }
+
+    If (messageObject.display = true)
+    {
+        Terminal.Writeln(messageObject.content);
+    }
 }
