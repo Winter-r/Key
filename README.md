@@ -7,6 +7,7 @@ Programming Language written in Typescript.
 # Keywords
 * let
 * const
+* *more to come*
 
 # Operators
 * Assign `<-`
