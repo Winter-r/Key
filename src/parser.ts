@@ -6,8 +6,7 @@ import
     Expression,
     BinaryExpression,
     NumericLiteral,
-    Identifier,
-    NullLiteral
+    Identifier    
 } from "./AST.ts";
 
 import
@@ -43,8 +42,7 @@ export default class Parser
 
         if (!prev || prev.type != type)
         {
-            console.error("Parser Error:\n", err, prev, "- Expecting:", type);
-            Deno.exit(1);
+            throw `Parser Error:\n ${err} ${prev} - Expecting: ${type}`;
         }
 
         return prev;
@@ -131,13 +129,6 @@ export default class Parser
                     name: this.Eat().value
                 } as Identifier;
 
-            case TokenType.Null:
-                this.Eat();
-                return {
-                    type: "NullLiteral",
-                    value: "null"
-                } as NullLiteral;
-
             case TokenType.Number:
                 return {
                     type: "NumericLiteral",
@@ -152,8 +143,7 @@ export default class Parser
             }
 
             default:
-                console.error("Parser Error:\n", "Unexpected token:", this.At());
-                Deno.exit(1);
+                throw `Parser Error:\n Unexpected token: ${this.At()}`;
         }
     }
 }

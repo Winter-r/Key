@@ -1,7 +1,7 @@
 export enum TokenType
 {
-  Null,
   Number,
+  String,
   Identifier,
   Equals,
   OpenParen,
@@ -13,7 +13,6 @@ export enum TokenType
 
 const KEYWORDS: Record<string, TokenType> = {
   let: TokenType.Let,
-  null: TokenType.Null
 };
 
 export interface Token
@@ -105,11 +104,7 @@ export function Tokenize(sourceCode: string): Token[]
       }
       else
       {
-        console.error(
-          `Unreconized character found in source: ${ src[0].charCodeAt(0) } (${ src[0]
-          })`,
-        );
-        Deno.exit(1);
+        throw `Unreconized character found in source: ${ src[0].charCodeAt(0) } (${ src[0]})`;
       }
     }
   }

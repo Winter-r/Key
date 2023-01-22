@@ -1,24 +1,34 @@
-// deno-lint-ignore-file no-unreachable
-import { RuntimeValue, NumberValue, NullValue } from "./values.ts";
-import { Node, NumericLiteral, Program, BinaryExpression } from "../AST.ts";
+import { RuntimeValue, NumberValue, MakeNull } from "./values.ts";
+import { Node, NumericLiteral, Program, BinaryExpression, Identifier } from "../AST.ts";
+import Environment from "./environment.ts";
 
-
-export function Evaluate(astNode: Node): RuntimeValue
+export function Evaluate(astNode: Node, env: Environment): RuntimeValue
 {
     switch (astNode.type)
     {
+        case "Program":
+            return EvaluateProgram(astNode, env);
         case "NumericLiteral":
             return EvaluateNumericLiteral(astNode);
-        case "NullLiteral":
-            return EvaluateNullLiteral();
         case "BinaryExpression":
-            return EvaluateBinaryExpression(astNode);
-        case "Program":
-            return EvaluateProgram(astNode);
+            return EvaluateBinaryExpression(astNode, env);
+        case "Identifier":
+            return EvaluateIdentifier(astNode, env);
         default:
-            throw new Error("Unknown node type: " + astNode.type);
-            Deno.exit(1);
+            throw ("Unknown node type: " + astNode.type);
     }
+}
+
+function EvaluateProgram(astNode: Node, env: Environment): RuntimeValue
+{
+    let result: RuntimeValue = MakeNull();
+
+    for (const statement of (astNode as Program).body)
+    {
+        result = Evaluate(statement, env);
+    }
+
+    return result;
 }
 
 function EvaluateNumericLiteral(astNode: Node): RuntimeValue
@@ -29,50 +39,24 @@ function EvaluateNumericLiteral(astNode: Node): RuntimeValue
     } as NumberValue;
 }
 
-function EvaluateNullLiteral(): RuntimeValue
+function EvaluateBinaryExpression(astNode: Node, env: Environment): RuntimeValue
 {
-    return {
-        type: "null",
-        value: "null"
-    } as NullValue;
-}
-
-function EvaluateBinaryExpression(astNode: Node): RuntimeValue
-{
-    const left: RuntimeValue = Evaluate((astNode as BinaryExpression).left);
-    const right: RuntimeValue = Evaluate((astNode as BinaryExpression).right);
+    const binop = astNode as BinaryExpression;
+    const left: RuntimeValue = Evaluate((binop).left, env);
+    const right: RuntimeValue = Evaluate((binop).right, env);
 
     if (left.type !== right.type)
     {
-        throw new Error("Cannot operate on different types");
-        Deno.exit(1);
+        throw ("Cannot operate on different types");
     }
 
     switch (left.type)
     {
         case "number":
-            return EvaluateNumericBinaryExpression(left as NumberValue, right as NumberValue, (astNode as BinaryExpression).operator);
+            return EvaluateNumericBinaryExpression(left as NumberValue, right as NumberValue, (binop).operator);
         default:
-            throw new Error("Unknown value type: " + left.type);
-            Deno.exit(1);
+            throw ("Unknown value type: " + left.type);
     }
-
-    return { type: "null", value: "null" } as NullValue;
-}
-
-function EvaluateProgram(astNode: Node): RuntimeValue
-{
-    let result: RuntimeValue = {
-        type: "null",
-        value: "null"
-    } as NullValue;
-
-    for (const statement of (astNode as Program).body)
-    {
-        result = Evaluate(statement);
-    }
-
-    return result;
 }
 
 function EvaluateNumericBinaryExpression(left: NumberValue, right: NumberValue, operator: string): RuntimeValue
@@ -106,7 +90,20 @@ function EvaluateNumericBinaryExpression(left: NumberValue, right: NumberValue, 
                 value: left.value % right.value
             } as NumberValue;
         default:
-            throw new Error("Unknown operator: " + operator);
-            Deno.exit(1);
+            throw ("Unknown operator: " + operator);
     }
+}
+
+function EvaluateIdentifier(astNode: Node, env: Environment): RuntimeValue
+{
+    const identifier = astNode as Identifier;
+
+    const value = env.GetVariable(identifier.name);
+
+    if (!value)
+    {
+        throw ("Undefined variable: " + identifier.name);
+    }
+
+    return value;
 }
