@@ -9,7 +9,7 @@ export enum TokenType
   Const, // const
 
   // Operators
-  Assign, // =
+  Assign, // <-
   BinaryOperator, // + - * / %
 
   // Grouping
