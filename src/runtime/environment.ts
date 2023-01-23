@@ -1,11 +1,14 @@
 import { MakeBool, RuntimeValue, MakeNull } from "./values.ts";
 
-function GlobalScope(env: Environment)
+export function CreateGlobalScope()
 {
+    const env = new Environment();
     // Default Global Variables
     env.DeclareVariable("true", MakeBool(true), true);
     env.DeclareVariable("false", MakeBool(false), true);
     env.DeclareVariable("null", MakeNull(), true);
+
+    return env;
 }
 
 export default class Environment
@@ -16,15 +19,9 @@ export default class Environment
 
     constructor(parentENV?: Environment)
     {
-        const global = parentENV ? true : false;
         this.parent = parentENV;
         this.variables = new Map();
         this.consts = new Set();
-
-        if (global)
-        {
-            GlobalScope(this);
-        }
     }
 
     public DeclareVariable(name: string, value: RuntimeValue, constant: boolean): RuntimeValue

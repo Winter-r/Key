@@ -1,14 +1,14 @@
 import Parser from "./src/parser.ts";
-import Environment from "./src/runtime/environment.ts";
 import { Evaluate } from "./src/runtime/interpreter.ts";
+import { CreateGlobalScope } from "./src/runtime/environment.ts";
 
 // repl();
-run("./Examples/test.key");
+run("./Examples/test.ky");
 
 async function run(filename: string)
 {
     const parser = new Parser();
-    const env = new Environment();
+    const env = CreateGlobalScope();
 
     const input = await Deno.readTextFile(filename);
     const program = parser.ProduceAST(input);
@@ -19,7 +19,7 @@ async function run(filename: string)
 function repl() 
 {
     const parser = new Parser();
-    const env = new Environment();
+    const env = CreateGlobalScope();
 
     console.log("\nWelcome to the REPL v0.1!")
     while (true)

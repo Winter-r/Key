@@ -20,6 +20,8 @@ export enum TokenType
 
   // Misc
   Semicolon, // ;
+  Colon, // :
+  Comma, // ,
   EOF // EndOfFile
 }
 
@@ -46,7 +48,7 @@ function IsAlpha(src: string)
 
 function IsSkippable(str: string)
 {
-  return str == " " || str == "\n" || str == "\t";
+  return str == " " || str == "\n" || str == "\t" || str == "\r";
 }
 
 function IsInt(str: string)
@@ -96,12 +98,21 @@ export function Tokenize(sourceCode: string): Token[]
       src.shift();
       tokens.push(Token("<-", TokenType.Assign));
     }
-
+    
+    // Handle misc
     else if (src[0] == ";")
     {
       tokens.push(Token(src.shift(), TokenType.Semicolon));
     }
-    else
+    else if (src[0] == ":")
+    {
+      tokens.push(Token(src.shift(), TokenType.Colon));
+    }
+    else if (src[0] == ",")
+    {
+      tokens.push(Token(src.shift(), TokenType.Comma));
+    }
+    else // Handle literals
     {
       if (IsInt(src[0]))
       {

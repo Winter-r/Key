@@ -8,7 +8,9 @@ import
     NumericLiteral,
     Identifier,
     VariableDeclaration,
-    AssignmentExpression
+    AssignmentExpression,
+    Property,
+    ObjectLiteral
 } from "./AST.ts";
 
 import
@@ -87,8 +89,6 @@ export default class Parser
         }
     }
 
-    // LET IDIENTIFIER = EXPRESSION
-    // CONST IDENTIFIER = EXPRESSION
     private ParseVariableDeclaration(): Node
     {
         const isConst = this.Eat().type == TokenType.Const;
@@ -134,9 +134,9 @@ export default class Parser
         return this.ParseAssignmentExpression();
     }
 
-    ParseAssignmentExpression(): Expression
+    private ParseAssignmentExpression(): Expression
     {
-        const left = this.ParseAdditiveExpression(); // TODO: Swap this with ObjectExpression
+        const left = this.ParseObjectExpression(); // TODO: Swap this with ObjectExpression
         if (this.At().type == TokenType.Assign)
         {
             this.Eat(); // Eat the assignment operator
@@ -145,6 +145,51 @@ export default class Parser
         }
 
         return left;
+    }
+
+    private ParseObjectExpression(): Expression
+    {
+        // { key: value, key: value }
+        if (this.At().type !== TokenType.OpenBrace)
+        {
+            return this.ParseAdditiveExpression();
+        }
+
+        this.Eat(); // Eat the opening brace
+        const properties = new Array<Property>();
+
+        while (this.NotEOF() && this.At().type !== TokenType.CloseBrace)
+        {
+            const key = this.Expect(TokenType.Identifier, "Expected identifier").value;
+            
+            // Allows shorthand syntax
+            if (this.At().type == TokenType.Comma)
+            {
+                this.Eat(); // Eat the comma
+                properties.push({ type: "Property", key, value: undefined });
+                continue;
+            }
+            // Allow { key }
+            else if (this.At().type == TokenType.CloseBrace)
+            {
+                properties.push({ type: "Property", key, value: undefined });
+                continue;
+            }
+
+            // { key: value, key: value }
+            this.Expect(TokenType.Colon, "Expected colon");
+            const value = this.ParseExpression();
+
+            properties.push({ type: "Property", key, value });
+
+            if (this.At().type != TokenType.CloseBrace)
+            {
+                this.Expect(TokenType.Comma, "Expected comma");
+            }
+        }
+
+        this.Expect(TokenType.CloseBrace, "Expected closing brace");
+        return { type: "ObjectLiteral", properties} as ObjectLiteral;
     }
 
     private ParseAdditiveExpression(): Expression

@@ -2,8 +2,13 @@ export type NodeType =
     // STATEMENTS
     | "Program"
     | "VariableDeclaration"
+
     // EXPRESSIONS
     | "AssignmentExpression"
+
+    // LITERALS
+    | "Property"
+    | "ObjectLiteral"
     | "NumericLiteral"
     | "Identifier"
     | "BinaryExpression";
@@ -55,4 +60,17 @@ export interface NumericLiteral extends Expression
 {
     type: "NumericLiteral";
     value: number;
+}
+
+export interface Property extends Expression
+{
+    type: "Property";
+    key: string;
+    value?: Expression;
+}
+
+export interface ObjectLiteral extends Expression
+{
+    type: "ObjectLiteral";
+    properties: Property[];
 }

@@ -1,7 +1,7 @@
-import { Node, BinaryExpression, Identifier, NumericLiteral, AssignmentExpression } from "../../AST.ts";
+import { Node, BinaryExpression, Identifier, NumericLiteral, AssignmentExpression, ObjectLiteral } from "../../AST.ts";
 import Environment from "../environment.ts";
 import { Evaluate } from "../interpreter.ts";
-import { RuntimeValue, NumberValue } from "../values.ts";
+import { RuntimeValue, NumberValue, ObjectValue } from "../values.ts";
 
 export function EvaluateBinaryExpression(astNode: Node, env: Environment): RuntimeValue
 {
@@ -70,6 +70,20 @@ export function EvaluateIdentifier(astNode: Node, env: Environment): RuntimeValu
     }
 
     return value;
+}
+
+export function EvaluateObjectExpression(astNode: Node, env: Environment): RuntimeValue
+{
+    const object = astNode as ObjectLiteral;
+    const objectValue = { type: "object", properties: new Map() } as ObjectValue;
+
+    for (const { key, value } of object.properties)
+    {
+        const runtimeValue = (value == undefined) ? env.GetVariable(key) : Evaluate(value, env);
+        objectValue.properties.set(key, runtimeValue);
+    }
+
+    return objectValue;
 }
 
 export function EvaluateNumericLiteral(astNode: Node): RuntimeValue

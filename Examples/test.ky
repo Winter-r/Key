@@ -1,12 +1,15 @@
+const foo <- 50 / 2;
+
 const obj <-
 {
     x: 100,
-    y: 200,
+    y: 32,
     complex:
     {
-        a: 1,
-        b: 2,
-        c: 3,
+        bar: true
     },
     foo
-}
+};
+
+let f = obj.complex.bar;
+foo = obj.foo() + 5;
