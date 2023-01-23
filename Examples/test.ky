@@ -1,15 +1,15 @@
-const foo <- 50 / 2;
+let foo <- 50 / 2;
 
 const obj <-
 {
     x: 100,
     y: 32,
+    foo: foo,
     complex:
     {
-        bar: true
+        bar: true,
     },
-    foo
 };
 
-let f = obj.complex.bar;
-foo = obj.foo() + 5;
+Writeln(45 / 2 + x, foo);
+foo <- obj.foo(bar(x, y)) + 5

@@ -10,7 +10,9 @@ import
     VariableDeclaration,
     AssignmentExpression,
     Property,
-    ObjectLiteral
+    ObjectLiteral,
+    CallExpression,
+    MemberExpression
 } from "./AST.ts";
 
 import
@@ -22,9 +24,13 @@ import
 
 // ORDER OF PRECEDENCE
 // 1. Assignment
-// 2. Additive
-// 3. Multiplicative
-// 4. Primary
+// 2. Object
+// 3. Additive
+// 4. Multiplicative
+// 5. Call
+// 6. Member
+// 7. Primary
+
 
 export default class Parser
 {
@@ -136,7 +142,7 @@ export default class Parser
 
     private ParseAssignmentExpression(): Expression
     {
-        const left = this.ParseObjectExpression(); // TODO: Swap this with ObjectExpression
+        const left = this.ParseObjectExpression();
         if (this.At().type == TokenType.Assign)
         {
             this.Eat(); // Eat the assignment operator
@@ -144,6 +150,7 @@ export default class Parser
             return { type: "AssignmentExpression", assignee: left, value } as AssignmentExpression;
         }
 
+        // check for semicolon
         return left;
     }
 
@@ -161,7 +168,7 @@ export default class Parser
         while (this.NotEOF() && this.At().type !== TokenType.CloseBrace)
         {
             const key = this.Expect(TokenType.Identifier, "Expected identifier").value;
-            
+
             // Allows shorthand syntax
             if (this.At().type == TokenType.Comma)
             {
@@ -189,7 +196,7 @@ export default class Parser
         }
 
         this.Expect(TokenType.CloseBrace, "Expected closing brace");
-        return { type: "ObjectLiteral", properties} as ObjectLiteral;
+        return { type: "ObjectLiteral", properties } as ObjectLiteral;
     }
 
     private ParseAdditiveExpression(): Expression
@@ -214,12 +221,12 @@ export default class Parser
 
     private ParseMultiplicativeExpression(): Expression
     {
-        let left = this.ParsePrimaryExpression();
+        let left = this.ParseCallMemberExpression();
 
         while (this.At().value == "*" || this.At().value == "/" || this.At().value == "%")
         {
             const operator = this.Eat().value;
-            const right = this.ParsePrimaryExpression();
+            const right = this.ParseCallMemberExpression();
 
             left = {
                 type: "BinaryExpression",
@@ -230,6 +237,106 @@ export default class Parser
         }
 
         return left;
+    }
+
+    private ParseCallMemberExpression(): Expression
+    {
+        const member = this.ParseMemberExpression();
+
+        if (this.At().type == TokenType.OpenParen)
+        {
+            return this.ParseCallExpression(member);
+        }
+
+        return member;
+    }
+
+    private ParseCallExpression(callee: Expression): Expression
+    {
+        let callExpression: Expression = {
+            type: "CallExpression",
+            callee,
+            args: this.ParseArgs()
+        } as CallExpression;
+
+        if (this.At().type == TokenType.OpenParen)
+        {
+            callExpression = this.ParseCallExpression(callExpression); // Recurse foo.x()()
+        }
+
+        // 
+        return callExpression;
+    }
+
+    // function foo(x, y, z) { }
+    private ParseArgs(): Expression[]
+    {
+        this.Expect(TokenType.OpenParen, "Expected open parenthesis");
+        const args = this.At().type == TokenType.CloseParen
+            ? []
+            : this.ParseArgsList();
+
+        this.Expect(
+            TokenType.CloseParen,
+            "Expected closing parenthesis",
+        );
+        
+        return args;
+    }
+
+    private ParseArgsList(): Expression[]
+    {
+        const args = [this.ParseAssignmentExpression()];
+
+        while (this.At().type == TokenType.Comma && this.Eat())
+        {
+            args.push(this.ParseAssignmentExpression());
+        }
+
+        return args;
+    }
+
+    private ParseMemberExpression(): Expression
+    {
+        let object = this.ParsePrimaryExpression();
+
+        while (
+            this.At().type == TokenType.Dot || this.At().type == TokenType.OpenBracket
+        )
+        {
+            const operator = this.Eat();
+            let property: Expression;
+            let computed: boolean;
+
+            // non-computed values aka obj.expr
+            if (operator.type == TokenType.Dot)
+            {
+                computed = false;
+                // get identifier
+                property = this.ParsePrimaryExpression();
+                if (property.type != "Identifier")
+                {
+                    throw `Expected identifier, got ${ property.type }`
+                }
+            } else
+            { // this allows obj[computedValue]
+                computed = true;
+                property = this.ParseExpression();
+                this.Expect(
+                    TokenType.CloseBracket,
+                    "Expected closing bracket",
+                );
+            }
+
+            object = {
+                type: "MemberExpression",
+                object,
+                property,
+                computed,
+            } as MemberExpression;
+        }
+
+        return object;
     }
 
     private ParsePrimaryExpression(): Expression

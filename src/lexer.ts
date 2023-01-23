@@ -17,11 +17,14 @@ export enum TokenType
   CloseParen, // )
   OpenBrace, // {
   CloseBrace, // }
+  OpenBracket, // [
+  CloseBracket, // ]
 
   // Misc
   Semicolon, // ;
   Colon, // :
   Comma, // ,
+  Dot, // .
   EOF // EndOfFile
 }
 
@@ -82,6 +85,14 @@ export function Tokenize(sourceCode: string): Token[]
     {
       tokens.push(Token(src.shift(), TokenType.CloseBrace));
     }
+    else if (src[0] == "[")
+    {
+      tokens.push(Token(src.shift(), TokenType.OpenBracket));
+    }
+    else if (src[0] == "]")
+    {
+      tokens.push(Token(src.shift(), TokenType.CloseBracket));
+    }
 
     // Handle binary operators
     else if (
@@ -98,7 +109,7 @@ export function Tokenize(sourceCode: string): Token[]
       src.shift();
       tokens.push(Token("<-", TokenType.Assign));
     }
-    
+
     // Handle misc
     else if (src[0] == ";")
     {
@@ -111,6 +122,10 @@ export function Tokenize(sourceCode: string): Token[]
     else if (src[0] == ",")
     {
       tokens.push(Token(src.shift(), TokenType.Comma));
+    }
+    else if (src[0] == ".")
+    {
+      tokens.push(Token(src.shift(), TokenType.Dot));
     }
     else // Handle literals
     {

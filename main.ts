@@ -16,30 +16,30 @@ async function run(filename: string)
     console.log(result);
 }
 
-function repl() 
-{
-    const parser = new Parser();
-    const env = CreateGlobalScope();
+// function repl() 
+// {
+//     const parser = new Parser();
+//     const env = CreateGlobalScope();
 
-    console.log("\nWelcome to the REPL v0.1!")
-    while (true)
-    {
-        const input = prompt(">>> ");
+//     console.log("\nWelcome to the REPL v0.1!")
+//     while (true)
+//     {
+//         const input = prompt(">>> ");
 
-        if (!input || input.includes("exit"))
-        {
-            Deno.exit(1);
-        }
+//         if (!input || input.includes("exit"))
+//         {
+//             Deno.exit(1);
+//         }
 
-        if (input.includes("clear"))
-        {
-            console.clear();
-            continue;
-        }
+//         if (input.includes("clear"))
+//         {
+//             console.clear();
+//             continue;
+//         }
 
-        const program = parser.ProduceAST(input);
+//         const program = parser.ProduceAST(input);
 
-        const result = Evaluate(program, env);
-        console.log(result);
-    }
-}
+//         const result = Evaluate(program, env);
+//         console.log(result);
+//     }
+// }
