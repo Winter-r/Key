@@ -1,8 +1,10 @@
+using Terminal;
+
 public class Goal
 {
     let message <- "Hello World";
     
-    Writeln(message);
+    Terminal.Writeln(message);
 
     const messageObject <-
     {
@@ -10,7 +12,7 @@ public class Goal
         display
     }
 
-    Readln("Enter a message", messageObject.content);
+    Terminal.Readln("Enter a message", messageObject.content);
     
     If (messageObject.content = "")
     {
@@ -23,6 +25,6 @@ public class Goal
 
     If (messageObject.display = true)
     {
-        Writeln(messageObject.content);
+        Terminal.Writeln(messageObject.content);
     }
 }
