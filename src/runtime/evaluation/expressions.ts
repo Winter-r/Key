@@ -1,7 +1,7 @@
-import { Node, BinaryExpression, Identifier, NumericLiteral, AssignmentExpression, ObjectLiteral } from "../../AST.ts";
+import { Node, BinaryExpression, Identifier, NumericLiteral, AssignmentExpression, ObjectLiteral, CallExpression } from "../../AST.ts";
 import Environment from "../environment.ts";
 import { Evaluate } from "../interpreter.ts";
-import { RuntimeValue, NumberValue, ObjectValue } from "../values.ts";
+import { RuntimeValue, NumberValue, ObjectValue, NativeFunctionValue } from "../values.ts";
 
 export function EvaluateBinaryExpression(astNode: Node, env: Environment): RuntimeValue
 {
@@ -84,6 +84,21 @@ export function EvaluateObjectExpression(astNode: Node, env: Environment): Runti
     }
 
     return objectValue;
+}
+
+export function EvaluateCallExpression(astNode: Node, env: Environment): RuntimeValue
+{
+    const expression = astNode as CallExpression;
+    const args = expression.args.map((arg) => Evaluate(arg, env));
+    const _function = Evaluate(expression.callee, env);
+
+    if (_function.type !== "native-function")
+    {
+        throw ("Cannot call non-native function: " + JSON.stringify(_function));
+    }
+
+    let result = (_function as NativeFunctionValue).call(args, env);
+    return result;
 }
 
 export function EvaluateNumericLiteral(astNode: Node): RuntimeValue

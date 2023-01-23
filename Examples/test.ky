@@ -1,15 +1,3 @@
-let foo <- 50 / 2;
+let time <- Time();
 
-const obj <-
-{
-    x: 100,
-    y: 32,
-    foo: foo,
-    complex:
-    {
-        bar: true,
-    },
-};
-
-Writeln(45 / 2 + x, foo);
-foo <- obj.foo(bar(x, y)) + 5
+Writeln(time)

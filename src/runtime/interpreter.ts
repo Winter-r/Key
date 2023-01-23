@@ -1,7 +1,7 @@
 import { EvaluateProgram, EvaluateVariableDeclaration } from "./evaluation/statements.ts";
-import { EvaluateAssignmentExpression, EvaluateBinaryExpression, EvaluateIdentifier, EvaluateNumericLiteral, EvaluateObjectExpression } from "./evaluation/expressions.ts";
+import { EvaluateAssignmentExpression, EvaluateBinaryExpression, EvaluateCallExpression, EvaluateIdentifier, EvaluateNumericLiteral, EvaluateObjectExpression } from "./evaluation/expressions.ts";
 import { RuntimeValue } from "./values.ts";
-import { Node } from "../AST.ts";
+import { CallExpression, Node } from "../AST.ts";
 import Environment from "./environment.ts";
 
 export function Evaluate(astNode: Node, env: Environment): RuntimeValue
@@ -20,6 +20,8 @@ export function Evaluate(astNode: Node, env: Environment): RuntimeValue
             return EvaluateIdentifier(astNode, env);
         case "ObjectLiteral":
             return EvaluateObjectExpression(astNode, env);
+        case "CallExpression":
+            return EvaluateCallExpression(astNode as CallExpression, env);
         case "VariableDeclaration":
             return EvaluateVariableDeclaration(astNode, env);
         default:

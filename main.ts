@@ -13,7 +13,7 @@ async function run(filename: string)
     const input = await Deno.readTextFile(filename);
     const program = parser.ProduceAST(input);
     const result = Evaluate(program, env);
-    console.log(result);
+    // console.log(result);
 }
 
 // function repl() 

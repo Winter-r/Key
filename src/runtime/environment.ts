@@ -1,4 +1,4 @@
-import { MakeBool, RuntimeValue, MakeNull } from "./values.ts";
+import { MakeBool, RuntimeValue, MakeNull, MakeNativeFunction, MakeNumber } from "./values.ts";
 
 export function CreateGlobalScope()
 {
@@ -7,6 +7,32 @@ export function CreateGlobalScope()
     env.DeclareVariable("true", MakeBool(true), true);
     env.DeclareVariable("false", MakeBool(false), true);
     env.DeclareVariable("null", MakeNull(), true);
+    env.DeclareVariable("Writeln", MakeNativeFunction(WritelnFunction), true);
+    env.DeclareVariable("Time", MakeNativeFunction(TimeFunction), true);
+    env.DeclareVariable("Readln", MakeNativeFunction(ReadlnFunction), true);
+
+    // Native Functions
+    function WritelnFunction(args: RuntimeValue[], _scope: Environment)
+    {
+        console.log(...args);
+        return MakeNull();
+    }
+
+    function TimeFunction(_args: RuntimeValue[], _scope: Environment)
+    {
+        return MakeNumber(Date.now());
+    }
+
+    function ReadlnFunction(_args: RuntimeValue[], _scope: Environment)
+    {
+        const input = prompt(">>>"); // TODO: Add a string argument to the function to use as a prompt
+        if (input == null)
+        {
+            return MakeNull();
+        }
+
+        return MakeNumber(Number(input)); // TODO: Make this return a string
+    }
 
     return env;
 }
