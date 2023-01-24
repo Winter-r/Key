@@ -1,5 +1,6 @@
 # Key
 Key is an early-stage Programming Language, written in Typescript. Inspired by C# and Typescript.
+*Note: This programming language is subjective for a language transfer, either to C++ or Rust.
 
 # Plan
 The primary goal of Key is to create a general purpose, OOP (Object Oriented Programming) language, capable of graphics rendering and creating GUI applications.
