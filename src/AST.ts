@@ -2,6 +2,7 @@ export type NodeType =
     // STATEMENTS
     | "Program"
     | "VariableDeclaration"
+    | "FunctionDeclaration"
 
     // EXPRESSIONS
     | "AssignmentExpression"
@@ -32,6 +33,12 @@ export interface VariableDeclaration extends Node
     const: boolean;
     identifier: string;
     value?: Expression;
+}
+
+export interface FunctionDeclaration extends Node
+{
+    type: "FunctionDeclaration";
+    params: string[];
 }
 
 // deno-lint-ignore no-empty-interface

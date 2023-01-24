@@ -1,3 +1,7 @@
-let time <- Time();
+function Add(x, y)
+{
+    let sum = x + y;
+    Writeln(sum);
 
-Writeln(time)
+    return sum;
+}
